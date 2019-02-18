@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_get">Obtener citas</string>
+    <string name="button_favourite">citas favoritas</string>
+    <string name="button_settings">Ajustes</string>
+    <string name="button_about">Acerca de</string>
+    <string name="activity_random">Citas aleatorias</string>
+    <string name="activity_favourite">Citas favoritas</string>
+    <string name="activity_settings">Ajustes</string>
+    <string name="activity_about">Acerca de</string>
+    <string name="about_information">QuoationShake por[...]</string>
+    <string name="user_identification">Nombre de usuario</string>
+    <string name="insert_name">Inserte su nombre</string>
+    <string name="language">Las citas serán buscadas en el siguiente lenguaje</string>
+    <string name="HTTP_method">Las respuestas se recibirán mediante el siguiente método HTTP</string>
+    <string name="author_info">Información del author</string>
+    <string name="refresh">Hola %1s!  Presiona el botón para obtener nuevas citas</string>
+    <string name="sample_quotation">Este es un ejemplo de cita</string>
+    <string name="sample_author">Este es un ejemplo de author</string>
+    <string name="user">Uno sin nombre</string>
+    <string name="activity_shake">Mezcla de citas</string>
+    <string name="Russian">Ruso</string>
+    <string name="English">Inglés</string>
+</resources>
