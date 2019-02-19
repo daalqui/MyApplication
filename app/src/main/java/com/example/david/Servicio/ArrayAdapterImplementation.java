@@ -24,7 +24,7 @@ public class ArrayAdapterImplementation extends ArrayAdapter<Quotation> {
 
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         //return super.getView(position, convertView, parent);
         View view = convertView;
         ViewHolder holderVistas = new ViewHolder();
@@ -32,15 +32,14 @@ public class ArrayAdapterImplementation extends ArrayAdapter<Quotation> {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(this.layout, null);
 
-
-            holderVistas.setVistaAuthor((TextView) view.findViewById(R.id.textViewAuthor));
-            holderVistas.setVistaCita((TextView) view.findViewById(R.id.textViewCita));
+            holderVistas.vistaAuthor = view.findViewById(R.id.textViewAuthor);
+            holderVistas.vistaCita = view.findViewById(R.id.textViewCita);
 
             view.setTag(holderVistas);
         }
-        Quotation item = (Quotation) getItem(position);
+        Quotation item = getItem(position);
         holderVistas = (ViewHolder) view.getTag();
-        holderVistas.vistaAuthor.setText(item.getQuoteText());
+        holderVistas.vistaAuthor.setText(item.getQuoteAuthor());
         holderVistas.vistaCita.setText(item.getQuoteText());
 
     return view;
