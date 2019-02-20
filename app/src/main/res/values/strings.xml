@@ -30,4 +30,10 @@
     
     <string name="English">English</string>
     <string name="Russian">Russian</string>
+
+    <string name="delete_quotation"> Are you sure that you want to delete this quotation?</string>
+    <string name="add">Add</string>
+    <string name="menu_new">Refresh</string>
+    <string name="delete_all">Clear All</string>
+    <string name="delete_all_favourite"> Are you sure that you want to delete ALL your favourite quotations?</string>
 </resources>

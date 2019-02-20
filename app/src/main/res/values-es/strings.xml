@@ -21,4 +21,10 @@
     <string name="activity_shake">Mezcla de citas</string>
     <string name="Russian">Ruso</string>
     <string name="English">Inglés</string>
+    <string name="delete_quotation">¿Estás seguro de que quieres borrar la cita?</string>
+    <string name="add">Añadir</string>
+    <string name="menu_new">Nuevo</string>
+    <string name="delete_all">Borrar todo</string>
+    <string name="delete_all_favourite">¿Estás seguro que quieres borrar todas tus citas favoritas?</string>
+
 </resources>

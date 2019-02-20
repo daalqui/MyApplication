@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
+
         <activity
             android:name=".DashBoardActivity"
             android:label="@string/activity_shake">
@@ -19,23 +20,43 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".AboutActivity"
-            android:label="@string/activity_about" />
+            android:label="@string/activity_about"
+            android:parentActivityName=".DashBoardActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                        android:value=".DashBoardActivity">
+            </meta-data>
+        </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/activity_settings" />
+            android:label="@string/activity_settings"
+            android:parentActivityName=".DashBoardActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DashBoardActivity">
+            </meta-data>
+        </activity>
+
         <activity
             android:name=".FavouriteActivity"
-            android:label="@string/activity_favourite">
+            android:label="@string/activity_favourite"
+            android:parentActivityName=".DashBoardActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DashBoardActivity">
+            </meta-data>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".QuotationActivity"
-            android:label="@string/activity_random">
-
+            android:label="@string/activity_random"
+            android:parentActivityName=".DashBoardActivity" >
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DashBoardActivity">
+            </meta-data>
         </activity>
     </application>
 
