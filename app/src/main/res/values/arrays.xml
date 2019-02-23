@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="Idiomas">
+    <array name="language_title">
         <item >English</item>
         <item >Russian</item>
     </array>
+    <array name="language_value">
+        <item>0</item>
+        <item>1</item>
+    </array>
 
-
-
+    <array name="HTTP_method_title">
+        <item>GET</item>
+        <item>POST</item>
+    </array>
+    <array name="HTTP_method_value">
+        <item>0</item>
+        <item>1</item>
+    </array>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.david.myapplication;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,8 +19,16 @@ public class QuotationActivity extends AppCompatActivity {
 
         TextView tv = findViewById(R.id.textView4);
         String text = tv.getText().toString();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        text= text.replaceAll("%1s", String.valueOf(R.string.user));
+        String user = preferences.getString("username","");
+        if (user.matches("")){
+            text= text.replaceAll("%1s", "nameless One");
+        }
+        else{
+            text= text.replaceAll("%1s", preferences.getString("username",""));
+        }
+
         tv.setText(text);
     }
 

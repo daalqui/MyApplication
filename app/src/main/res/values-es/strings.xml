@@ -9,10 +9,6 @@
     <string name="activity_settings">Ajustes</string>
     <string name="activity_about">Acerca de</string>
     <string name="about_information">QuoationShake por[...]</string>
-    <string name="user_identification">Nombre de usuario</string>
-    <string name="insert_name">Inserte su nombre</string>
-    <string name="language">Las citas serán buscadas en el siguiente lenguaje</string>
-    <string name="HTTP_method">Las respuestas se recibirán mediante el siguiente método HTTP</string>
     <string name="author_info">Información del author</string>
     <string name="refresh">Hola %1s!  Presiona el botón para obtener nuevas citas</string>
     <string name="sample_quotation">Este es un ejemplo de cita</string>
