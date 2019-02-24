@@ -17,8 +17,8 @@
     <string name="author_info">Author info</string>
 
     <string name="refresh">Hello %1s!\nPress  Refresh  to  get  a new  quotation</string>
-    <string name="sample_quotation"> This is a sample quotation</string>
-    <string name="sample_author">This is a sample author</string>
+    <string name="sample_quotation"> Sample quote %1d </string>
+    <string name="sample_author">Sample author %1d</string>
 
     <string name="user"> Nameless One</string>
 

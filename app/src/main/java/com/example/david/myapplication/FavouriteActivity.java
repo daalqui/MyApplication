@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.david.Servicio.ArrayAdapterImplementation;
+import com.example.david.databases.MySQLiteOpenHelper;
 import com.example.david.pojos.Quotation;
 
 import java.net.URLEncoder;
@@ -31,7 +32,11 @@ public class FavouriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
-        lista = getMockQuotations();
+
+        // metodo de la práctica 2B --> sustituido por acceso a la BD.
+        //lista = getMockQuotations();
+        lista = MySQLiteOpenHelper.getInstance(this).getQuotations();
+
         adapterList = new ArrayAdapterImplementation(this, R.layout.quotation_list_row,lista);
 
         ListView vista = findViewById(R.id.listviewCitas);
@@ -114,7 +119,9 @@ public class FavouriteActivity extends AppCompatActivity {
                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                       lista.clear();
+                      // borro la lista de la base de datos. (cuidado con el contexto pasado)
+                      // lista.clear();
+                       MySQLiteOpenHelper.getInstance(FavouriteActivity.this).deleteAllQuotation();
                        adapterList.notifyDataSetChanged();
                    }
 

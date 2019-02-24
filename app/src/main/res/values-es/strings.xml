@@ -11,8 +11,8 @@
     <string name="about_information">QuoationShake por[...]</string>
     <string name="author_info">Información del author</string>
     <string name="refresh">Hola %1s!  Presiona el botón para obtener nuevas citas</string>
-    <string name="sample_quotation">Este es un ejemplo de cita</string>
-    <string name="sample_author">Este es un ejemplo de author</string>
+    <string name="sample_quotation">Ejemplo de cita %1d</string>
+    <string name="sample_author">Autor de la cita %1d</string>
     <string name="user">Uno sin nombre</string>
     <string name="activity_shake">Mezcla de citas</string>
     <string name="Russian">Ruso</string>
