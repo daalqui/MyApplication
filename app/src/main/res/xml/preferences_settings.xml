@@ -13,6 +13,7 @@
             android:summary="@string/language_resume"
             android:entries="@array/language_title"
             android:entryValues="@array/language_value"
+            android:defaultValue="0"
             android:key="language" />
 
         <ListPreference
@@ -20,6 +21,7 @@
             android:summary="@string/HTTP_method_resume"
             android:entries="@array/HTTP_method_title"
             android:entryValues="@array/HTTP_method_value"
+            android:defaultValue="0"
             android:key="http_method"/>
     </PreferenceCategory>
 </PreferenceScreen>

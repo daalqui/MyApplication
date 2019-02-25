@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import com.example.david.databases.MySQLiteOpenHelper;
@@ -18,6 +17,7 @@ public class QuotationActivity extends AppCompatActivity {
     private int numCitasRecibidas = 0;
     Menu menu;
     TextView tQuotation, tAuthor;
+    boolean addVisible = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +31,7 @@ public class QuotationActivity extends AppCompatActivity {
             tQuotation.setText(savedInstanceState.getString("quotation"));
             tAuthor.setText(savedInstanceState.getString("author"));
             // falta hacer que la opción add sea visible.
-            // add.setVisible(savedInstanceState.getBoolean("addVisible"));
+            addVisible = savedInstanceState.getBoolean("addVisible");
 
         }
         else {
@@ -89,7 +89,7 @@ public class QuotationActivity extends AppCompatActivity {
 
                 // Si una cita no existe en la BD hago visible la opción add
                 if(!bd.quotationExistInBD(quotation)){
-                    menu.findItem(R.id.menu_add).setVisible(true);
+                    menu.findItem(R.id.menu_add).setVisible(addVisible);
                 }
                 return true;
         }

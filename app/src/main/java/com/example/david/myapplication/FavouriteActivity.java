@@ -28,6 +28,7 @@ public class FavouriteActivity extends AppCompatActivity {
 
     private  ArrayList<Quotation> lista;
     private  ArrayAdapterImplementation adapterList;
+    private MySQLiteOpenHelper db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,8 @@ public class FavouriteActivity extends AppCompatActivity {
 
         // metodo de la práctica 2B --> sustituido por acceso a la BD.
         //lista = getMockQuotations();
-        lista = MySQLiteOpenHelper.getInstance(this).getQuotations();
+        db = MySQLiteOpenHelper.getInstance(this);
+        lista = db.getQuotations();
 
         adapterList = new ArrayAdapterImplementation(this, R.layout.quotation_list_row,lista);
 
@@ -71,8 +73,11 @@ public class FavouriteActivity extends AppCompatActivity {
                 alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                    lista.remove(position);
-                    adapterList.notifyDataSetChanged();
+                        // elimino la quotation de la bd
+                        db.deleteQuotation(lista.get(position));
+                        // elimino la quotation de la interfaz
+                        lista.remove(position);
+                        adapterList.notifyDataSetChanged();
                     }
                 });
                 alert.setNegativeButton(android.R.string.no,null);
@@ -119,9 +124,10 @@ public class FavouriteActivity extends AppCompatActivity {
                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                      // borro la lista de la base de datos. (cuidado con el contexto pasado)
-                      // lista.clear();
-                       MySQLiteOpenHelper.getInstance(FavouriteActivity.this).deleteAllQuotation();
+                      // borro la interfaz
+                       lista.clear();
+                       // borro la base de datos
+                       db.deleteAllQuotation();
                        adapterList.notifyDataSetChanged();
                    }
 

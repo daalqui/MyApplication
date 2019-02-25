@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.david.pojos.Quotation;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
@@ -31,9 +31,12 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-            db = getWritableDatabase();
             db.execSQL("CREATE   TABLE   quotation_table   (id   INTEGER   PRIMARY   KEY AUTOINCREMENT, quote TEXT NOT NULL, author TEXT, UNIQUE(quote));");
-            db.close();
+            ContentValues values = new ContentValues();
+            values.put("quote","cita DB");
+            values.put("author","author DB");
+            db.insert("quotation_table", null, values);
+            //db.close();
         } catch (SQLiteException e) {
             e.printStackTrace();
         }
@@ -59,7 +62,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
             quotationList.add(quotation);
         }
         cursor.close();
-        db.close();
+        //db.close();
         return quotationList;
     }
 
@@ -67,9 +70,10 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     public boolean quotationExistInBD(String quotation) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query("quotation_table", null, "quote=?", new String[]{quotation}, null, null, null, null);
+        boolean exists = cursor.getCount() > 0;
         cursor.close();
-        db.close();
-        return cursor.getCount() > 0;
+        //db.close();
+        return exists;
     }
 
     // inserto una quotation en la BD
@@ -79,12 +83,19 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
         values.put("quote",quotation.getQuoteText());
         values.put("author",quotation.getQuoteAuthor());
         db.insert("quotation_table", null, values);
-        db.close();
+        //db.close();
     }
 
     public void deleteAllQuotation(){
         SQLiteDatabase db = getWritableDatabase();
         db.delete("quotation_table",null,null);
-        db.close();
+        //db.close();
+    }
+
+    public void deleteQuotation(Quotation quotation){
+        String sQuotation = quotation.getQuoteText();
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("quotation_table","quote=?",new String[] {sQuotation});
+        //db.close();
     }
 }
