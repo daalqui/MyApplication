@@ -22,5 +22,6 @@
     <string name="menu_new">Nuevo</string>
     <string name="delete_all">Borrar todo</string>
     <string name="delete_all_favourite">¿Estás seguro que quieres borrar todas tus citas favoritas?</string>
+    <string name="Databases">Bases de datos</string>
 
 </resources>

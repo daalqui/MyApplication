@@ -46,5 +46,6 @@
     <string name="database_access_resume" translatable="false">Database will be accessed following the selected method</string>
     <string name="title_activity_settings" translatable="false">Settings</string>
 
+    <string name="Databases"> Databases</string>
 
 </resources>

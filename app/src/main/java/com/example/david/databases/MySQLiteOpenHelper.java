@@ -98,4 +98,5 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
         db.delete("quotation_table","quote=?",new String[] {sQuotation});
         //db.close();
     }
+
 }

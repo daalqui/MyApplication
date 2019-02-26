@@ -24,4 +24,16 @@
             android:defaultValue="0"
             android:key="http_method"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/Databases">
+        <ListPreference
+            android:title="@string/database_access_title"
+            android:summary="@string/database_access_resume"
+            android:entries="@array/Database_title"
+            android:entryValues="@array/Database_value"
+            android:defaultValue="0"
+            android:key="database" />
+
+
+
+    </PreferenceCategory>
 </PreferenceScreen>
