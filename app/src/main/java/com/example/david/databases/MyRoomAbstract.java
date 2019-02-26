@@ -19,4 +19,5 @@ public abstract class MyRoomAbstract extends RoomDatabase {
         }
         return myRoomAbstract;
     }
+    public abstract QuotationDao quotationDao();
 }

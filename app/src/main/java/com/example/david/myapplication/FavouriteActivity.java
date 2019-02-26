@@ -2,7 +2,9 @@ package com.example.david.myapplication;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.david.Servicio.ArrayAdapterImplementation;
+import com.example.david.databases.MyRoomAbstract;
 import com.example.david.databases.MySQLiteOpenHelper;
 import com.example.david.pojos.Quotation;
 
@@ -29,18 +32,29 @@ public class FavouriteActivity extends AppCompatActivity {
     private  ArrayList<Quotation> lista;
     private  ArrayAdapterImplementation adapterList;
     private MySQLiteOpenHelper db;
+    private MyRoomAbstract room;
+    private SharedPreferences preferences;
+    private String dbOption;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
 
-        // metodo de la práctica 2B --> sustituido por acceso a la BD.
-        //lista = getMockQuotations();
+        // accedo al archivo de configuración
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // guardo la opción de base de datos seleccionada en settings.
+        dbOption = preferences.getString("database", "0");
+
+        // instancias de objetos para realizar operaciones a la BD
         db = MySQLiteOpenHelper.getInstance(this);
-        lista = db.getQuotations();
+        room = MyRoomAbstract.getInstance(this);
+
+        // guardo las quotation en una lista de un modo u otro
+        if (dbOption.matches("0"))  lista = (ArrayList<Quotation>) room.quotationDao().getAllQuotation();
+        else lista = db.getQuotations();
 
         adapterList = new ArrayAdapterImplementation(this, R.layout.quotation_list_row,lista);
-
         ListView vista = findViewById(R.id.listviewCitas);
         vista.setAdapter(adapterList);
 
@@ -48,11 +62,7 @@ public class FavouriteActivity extends AppCompatActivity {
         vista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
                 String author = URLEncoder.encode(((TextView)view.findViewById(R.id.textViewAuthor)).getText().toString());
-
-
                 if (author.equals("") || author == null)
                 Toast.makeText(FavouriteActivity.this, " No es posible obtener información " ,Toast.LENGTH_SHORT).show();
                 else {
@@ -73,8 +83,11 @@ public class FavouriteActivity extends AppCompatActivity {
                 alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // elimino la quotation de la bd
-                        db.deleteQuotation(lista.get(position));
+
+                        // elimino la quotation de la bd de un modo u otro
+                        if(dbOption.matches("0"))room.quotationDao().deleteQuotation(lista.get(position));
+                        else db.deleteQuotation(lista.get(position));
+
                         // elimino la quotation de la interfaz
                         lista.remove(position);
                         adapterList.notifyDataSetChanged();
@@ -124,10 +137,13 @@ public class FavouriteActivity extends AppCompatActivity {
                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                      // borro la interfaz
+
+                       // borro la base de datos de un modo u otro
+                       if (dbOption.matches("0")) room.quotationDao().deleteAllQuotation();
+                       else db.deleteAllQuotation();
+
+                       // borro la interfaz
                        lista.clear();
-                       // borro la base de datos
-                       db.deleteAllQuotation();
                        adapterList.notifyDataSetChanged();
                    }
 

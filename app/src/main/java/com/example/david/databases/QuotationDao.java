@@ -22,7 +22,7 @@ public interface QuotationDao {
     @Query("SELECT * FROM quotation_table")
     public List<Quotation> getAllQuotation();
 
-    @Query("SELECT * FROM quotation_table WHERE quote = quotation")
+    @Query("SELECT * FROM quotation_table WHERE quote = :quotation")
     public Quotation getQuotation(String quotation);
 
     @Query("DELETE FROM quotation_table")

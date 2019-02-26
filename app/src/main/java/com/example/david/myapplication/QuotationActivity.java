@@ -1,6 +1,7 @@
 package com.example.david.myapplication;
 
 import android.content.SharedPreferences;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.david.databases.MyRoomAbstract;
 import com.example.david.databases.MySQLiteOpenHelper;
 import com.example.david.pojos.Quotation;
 
@@ -17,14 +19,29 @@ public class QuotationActivity extends AppCompatActivity {
     private int numCitasRecibidas = 0;
     Menu menu;
     TextView tQuotation, tAuthor;
-    boolean addVisible = true;
+    boolean addVisible;
+    private MySQLiteOpenHelper db;
+    private MyRoomAbstract room;
+    private SharedPreferences preferences;
+
+    private String dbOption;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // guardo la opción de base de datos seleccionada en settings.
+        dbOption = preferences.getString("database", "0");
+
         setContentView(R.layout.activity_quotation);
         tQuotation = findViewById(R.id.textView4);
         tAuthor = findViewById(R.id.textView3);
 
+        //instancia de objeto SQLite para operaciones a la bd
+        db = MySQLiteOpenHelper.getInstance(this);
+        // instancia de objeto room para operaciones a la bd.
+        room = MyRoomAbstract.getInstance(this);
 
         if(savedInstanceState != null){
             numCitasRecibidas = savedInstanceState.getInt("numCitasRecibidas");
@@ -35,7 +52,7 @@ public class QuotationActivity extends AppCompatActivity {
 
         }
         else {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
             String textQuotation = tQuotation.getText().toString();
             String user = preferences.getString("username", "");
             if (user.matches("")) {
@@ -64,16 +81,17 @@ public class QuotationActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        //instancia de la BD
-        MySQLiteOpenHelper bd = MySQLiteOpenHelper.getInstance(this);
-
         switch (item.getItemId()){
-            // añade una cita a favoritos (por completar)
+            // añade una cita a favoritos
             case R.id.menu_add:
                 Quotation q = new Quotation();
                 q.setQuoteAuthor(tAuthor.getText().toString());
                 q.setQuoteText(tQuotation.getText().toString());
-                bd.addQuotation(q);
+
+                // guardo una cita de un modo u otro.
+                if (dbOption.matches("0")) room.quotationDao().addQuotation(q);
+                else db.addQuotation(q);
+
                 // desactivo la opcion add despues del primer uso.
                 item.setVisible(false);
               return true;
@@ -88,8 +106,8 @@ public class QuotationActivity extends AppCompatActivity {
                 numCitasRecibidas += 1;
 
                 // Si una cita no existe en la BD hago visible la opción add
-                if(!bd.quotationExistInBD(quotation)){
-                    menu.findItem(R.id.menu_add).setVisible(addVisible);
+                if(!db.quotationExistInBD(quotation)){
+                    menu.findItem(R.id.menu_add).setVisible(true);
                 }
                 return true;
         }
