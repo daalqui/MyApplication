@@ -18,12 +18,19 @@ public class DashBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
 
-         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(DashBoardActivity.this);
+                if (!preferences.getBoolean("first_run",true)){
+                    MyRoomAbstract.getInstance(DashBoardActivity.this).quotationDao().getAllQuotation();
+                    preferences.edit().putBoolean("first_run",false).apply();
+                }
+            }
+        }).start();
         // Si no existe el boolean la base de datos no ha sido creada y se creará con room
-        if (!preferences.getBoolean("first_run",true)){
-            MyRoomAbstract.getInstance(this).quotationDao().getAllQuotation();
-            preferences.edit().putBoolean("first_run",false);
-        }
+
     }
 
     public void showView(View v){

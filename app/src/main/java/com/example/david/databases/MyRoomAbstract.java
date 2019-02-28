@@ -14,10 +14,10 @@ public abstract class MyRoomAbstract extends RoomDatabase {
 
     public synchronized static MyRoomAbstract getInstance(Context context){
         if(myRoomAbstract == null){
-            myRoomAbstract = Room.databaseBuilder(context, MyRoomAbstract.class, "quotation_table").
-                    allowMainThreadQueries().build();
+            myRoomAbstract = Room.databaseBuilder(context, MyRoomAbstract.class, "quotation_table").build();
         }
         return myRoomAbstract;
     }
+
     public abstract QuotationDao quotationDao();
 }

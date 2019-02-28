@@ -23,41 +23,46 @@ import com.example.david.Servicio.ArrayAdapterImplementation;
 import com.example.david.databases.MyRoomAbstract;
 import com.example.david.databases.MySQLiteOpenHelper;
 import com.example.david.pojos.Quotation;
+import com.example.david.tasks.MyAsynTask;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FavouriteActivity extends AppCompatActivity {
 
-    private  ArrayList<Quotation> lista;
+    private  ArrayList<Quotation> lista = new ArrayList<>();
+    private Menu menu;
     private  ArrayAdapterImplementation adapterList;
+    private ListView vista;
     private MySQLiteOpenHelper db;
     private MyRoomAbstract room;
     private SharedPreferences preferences;
     private String dbOption;
+    MenuItem menu_delete;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
 
-        // accedo al archivo de configuración
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // guardo la opción de base de datos seleccionada en settings.
-        dbOption = preferences.getString("database", "0");
 
         // instancias de objetos para realizar operaciones a la BD
         db = MySQLiteOpenHelper.getInstance(this);
         room = MyRoomAbstract.getInstance(this);
 
-        // guardo las quotation en una lista de un modo u otro
-        if (dbOption.matches("0"))  lista = (ArrayList<Quotation>) room.quotationDao().getAllQuotation();
-        else lista = db.getQuotations();
+        // accedo al archivo de configuración
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // guardo la opción de base de datos seleccionada en settings.
+        dbOption = preferences.getString("database", "0");
 
+        lista = new ArrayList<>();
         adapterList = new ArrayAdapterImplementation(this, R.layout.quotation_list_row,lista);
-        ListView vista = findViewById(R.id.listviewCitas);
+        vista = findViewById(R.id.listviewCitas);
         vista.setAdapter(adapterList);
 
+        MyAsynTask asynTask = new MyAsynTask(this);
+        asynTask.execute(dbOption.matches("0"));
 
         vista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -75,56 +80,46 @@ public class FavouriteActivity extends AppCompatActivity {
                 }
             }
         });
+
         vista.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(FavouriteActivity.this);
-                alert.setMessage(R.string.delete_quotation);
+                alert.setMessage(R.string.delete_quotation );
                 alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                Quotation quotationDeleted = lista.get(position);
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        // elimino la quotation de la bd de un modo u otro
-                        if(dbOption.matches("0"))room.quotationDao().deleteQuotation(lista.get(position));
-                        else db.deleteQuotation(lista.get(position));
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
 
+                                // elimino la quotation de la bd de un modo u otro
+                                if(dbOption.matches("0"))room.quotationDao().deleteQuotation(quotationDeleted);
+                                else db.deleteQuotation(quotationDeleted);
+                            }
+                        }).start();
                         // elimino la quotation de la interfaz
                         lista.remove(position);
                         adapterList.notifyDataSetChanged();
                     }
                 });
+
                 alert.setNegativeButton(android.R.string.no,null);
                 alert.create().show();
                 return true;
             }
         });
 
-
-        /* método onclick practica 2A
-        Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://en.wikipedia.org/wiki/Special:Search?search=" + "Albert Einstein"));
-
-            if(intent.resolveActivity(getPackageManager()) != null){
-                startActivity(intent);
-            }
-
-            }
-
-        });*/
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_favourite_activity,menu);
-        if(lista.isEmpty()){
-            menu.getItem(R.id.menu_delete).setVisible(false);
-        }
+        this.menu = menu;
+        menu_delete = menu.findItem(R.id.menu_delete);
         return true;
     }
 
@@ -132,16 +127,21 @@ public class FavouriteActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
        switch (item.getItemId()){
            case R.id.menu_delete:
+
                AlertDialog.Builder alert = new AlertDialog.Builder(this);
                alert.setMessage(R.string.delete_all_favourite);
                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
 
-                       // borro la base de datos de un modo u otro
-                       if (dbOption.matches("0")) room.quotationDao().deleteAllQuotation();
-                       else db.deleteAllQuotation();
-
+                       new Thread(new Runnable() {
+                           @Override
+                           public void run() {
+                               // borro la base de datos de un modo u otro
+                               if (dbOption.matches("0")) room.quotationDao().deleteAllQuotation();
+                               else db.deleteAllQuotation();
+                           }
+                       }).start();
                        // borro la interfaz
                        lista.clear();
                        adapterList.notifyDataSetChanged();
@@ -154,24 +154,12 @@ public class FavouriteActivity extends AppCompatActivity {
        }
         return super.onOptionsItemSelected(item);
     }
+    public void listManager(List<Quotation> quotationList){
+        adapterList.addAll(quotationList);
+        vista.setAdapter(adapterList);
 
-    public ArrayList<Quotation> getMockQuotations(){
-        ArrayList<Quotation> listaQ = new ArrayList<>();
-        for (int i = 1; i <= 10; i++){
-            Quotation q = new Quotation();
-            if (i == 4) {
-                q.setQuoteAuthor("");
-                q.setQuoteText("cita: " + i);
-                listaQ.add(q);
-            }
-            else {
-                q.setQuoteAuthor("David" + i);
-                q.setQuoteText("cita: " + i);
-                listaQ.add(q);
-            }
-        }
 
-        return listaQ;
     }
+
 
 }

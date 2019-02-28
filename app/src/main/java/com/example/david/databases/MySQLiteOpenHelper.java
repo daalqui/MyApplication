@@ -32,10 +32,6 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         try {
             db.execSQL("CREATE   TABLE   quotation_table   (id   INTEGER   PRIMARY   KEY AUTOINCREMENT, quote TEXT NOT NULL, author TEXT, UNIQUE(quote));");
-            ContentValues values = new ContentValues();
-            values.put("quote","cita DB");
-            values.put("author","author DB");
-            db.insert("quotation_table", null, values);
             //db.close();
         } catch (SQLiteException e) {
             e.printStackTrace();
