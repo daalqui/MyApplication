@@ -8,29 +8,33 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.david.databases.MyRoomAbstract;
 import com.example.david.databases.MySQLiteOpenHelper;
 import com.example.david.pojos.Quotation;
+import com.example.david.tasks.HTTPAsyncTask;
+
 import android.os.Handler;
 
 
 public class QuotationActivity extends AppCompatActivity {
 
-    private int numCitasRecibidas = 0;
-    private String sAuthor, sQuotation;
     Menu menu;
-    MenuItem menu_add;
+    MenuItem menu_add, menu_refresh;
     TextView tQuotation, tAuthor;
     boolean addVisible;
     private MySQLiteOpenHelper db;
     private MyRoomAbstract room;
     private SharedPreferences preferences;
-    android.os.Handler handler;
+    Handler handler;
+    ProgressBar progressBar;
 
     private String dbOption;
 
+    // callback que se ejecuta al crearse la actividad
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +55,6 @@ public class QuotationActivity extends AppCompatActivity {
         room = MyRoomAbstract.getInstance(this);
 
         if(savedInstanceState != null){
-            numCitasRecibidas = savedInstanceState.getInt("numCitasRecibidas");
             tQuotation.setText(savedInstanceState.getString("quotation"));
             tAuthor.setText(savedInstanceState.getString("author"));
             // falta hacer que la opción add sea visible.
@@ -73,6 +76,7 @@ public class QuotationActivity extends AppCompatActivity {
         }
     }
 
+    // callback que carga el toolbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -80,6 +84,7 @@ public class QuotationActivity extends AppCompatActivity {
         inflater.inflate(R.menu.actionbar_quotation_activity,menu);
         this.menu = menu;
         menu_add = menu.findItem(R.id.menu_add);
+        menu_refresh = menu.findItem(R.id.menu_refresh);
         return true;
     }
 
@@ -112,32 +117,11 @@ public class QuotationActivity extends AppCompatActivity {
               //refresca la información del view
             case R.id.menu_refresh:
 
-                // Actualiza las citas
-                sQuotation = getResources().getString(R.string.sample_quotation).replaceAll("%1d", String.valueOf(numCitasRecibidas));
-                sAuthor = getResources().getString(R.string.sample_author).replaceAll("%1d", String.valueOf(numCitasRecibidas));
-                numCitasRecibidas += 1;
-                tQuotation.setText(sQuotation);
-                tAuthor.setText(sAuthor);
+                //acceso al servicio web en segundo plano
+                HTTPAsyncTask httpAsyncTask = new HTTPAsyncTask(this);
+                httpAsyncTask.execute();
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Si una cita no existe en la BD hago visible la opción add
-                        if(!db.quotationExistInBD(sQuotation)){
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // hacemos visible el menu add.
-                                   menu_add.setVisible(true);
-                                }
-                            });
-
-                        }
-                    }
-                }).start();
-
-
-
+                // thread en refreshQuotation()
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -147,9 +131,48 @@ public class QuotationActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("numCitasRecibidas", numCitasRecibidas);
         outState.putString("quotation", tQuotation.getText().toString());
         outState.putString("author", tAuthor.getText().toString());
         outState.putBoolean("addVisible",menu.findItem(R.id.menu_add).isVisible());
+    }
+
+    // Método que oculta el actionBar mientras carga el progressBar.
+    public void chargeProgressBar(){
+
+        //no es necesario el casting a ProgressBar.
+        progressBar =  findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE); //nose si funciona con este VIEW.
+        menu_add.setVisible(false);
+        menu_refresh.setVisible(false);
+    }
+
+    // Metodo que actualiza las etiquetas de cita y autor.
+    public void refreshQuotation(final Quotation quotation){
+        //actualizo las etiquetas
+        tQuotation.setText(quotation.getQuoteText());
+        tAuthor.setText(quotation.getQuoteAuthor());
+
+        //hago invisible le progressbar y visible el reresh
+        progressBar.setVisibility(View.INVISIBLE);
+        menu_refresh.setVisible(true);
+
+        // compruebo si una cita de la web ya está en la db
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Si una cita no existe en la BD hago visible la opción add
+                if(!db.quotationExistInBD(quotation.getQuoteText())){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            // hacemos visible los menus
+                            menu_add.setVisible(true);
+
+                        }
+                    });
+
+                }
+            }
+        }).start();
     }
 }

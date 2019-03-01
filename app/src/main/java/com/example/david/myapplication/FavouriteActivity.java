@@ -154,6 +154,8 @@ public class FavouriteActivity extends AppCompatActivity {
        }
         return super.onOptionsItemSelected(item);
     }
+
+
     public void listManager(List<Quotation> quotationList){
         adapterList.addAll(quotationList);
         vista.setAdapter(adapterList);
