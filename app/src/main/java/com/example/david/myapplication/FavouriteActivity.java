@@ -73,7 +73,7 @@ public class FavouriteActivity extends AppCompatActivity {
                 else {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("https://en.wikipedia.org/wiki/Special:Search?search=" + "author"));
+                    intent.setData(Uri.parse("https://en.wikipedia.org/wiki/Special:Search?search=" + author));
                     if (intent.resolveActivity(getPackageManager()) != null) {
                         startActivity(intent);
                     }
@@ -148,6 +148,7 @@ public class FavouriteActivity extends AppCompatActivity {
                    }
 
                });
+               alert.setNegativeButton(android.R.string.no,null);
                alert.create().show();
                item.setVisible(false);
                return true;
@@ -157,6 +158,11 @@ public class FavouriteActivity extends AppCompatActivity {
 
 
     public void listManager(List<Quotation> quotationList){
+      /* no funciona el desaparecer el botón de borrar
+        if(quotationList.size() == 0){
+           menu_delete.setVisible(false);
+        }
+        */
         adapterList.addAll(quotationList);
         vista.setAdapter(adapterList);
 

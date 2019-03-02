@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
@@ -37,7 +38,7 @@ public class QuotationActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     Handler handler;
     ProgressBar progressBar;
-
+    HTTPAsyncTask httpAsyncTask;
     private String dbOption;
 
     // callback que se ejecuta al crearse la actividad
@@ -126,12 +127,20 @@ public class QuotationActivity extends AppCompatActivity {
 
                 if (isNetworkConnected()){
                     //acceso al servicio web en segundo plano
-                    HTTPAsyncTask httpAsyncTask = new HTTPAsyncTask(this);
+                    httpAsyncTask = new HTTPAsyncTask(this);
                     httpAsyncTask.execute(preferences.getString("language", "0"));
                 }
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (httpAsyncTask!= null && httpAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+            httpAsyncTask.cancel(true);
+        }
     }
 
     // Metodo llamado cuando la actividad va a ser destruida.

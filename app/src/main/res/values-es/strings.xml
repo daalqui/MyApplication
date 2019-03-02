@@ -8,7 +8,7 @@
     <string name="activity_favourite">Citas favoritas</string>
     <string name="activity_settings">Ajustes</string>
     <string name="activity_about">Acerca de</string>
-    <string name="about_information">QuoationShake por[...]</string>
+    <string name="about_information">Aplicación creada por \n\n David Alegria \n\n daalqui@inf.upv.es \n\n 2019</string>
     <string name="author_info">Información del author</string>
     <string name="refresh">Hola %1s!  Presiona el botón para obtener nuevas citas</string>
     <string name="sample_quotation">Ejemplo de cita %1d</string>
