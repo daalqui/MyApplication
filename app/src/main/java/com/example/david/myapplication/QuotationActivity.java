@@ -1,8 +1,13 @@
 package com.example.david.myapplication;
 
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,6 +23,7 @@ import com.example.david.pojos.Quotation;
 import com.example.david.tasks.HTTPAsyncTask;
 
 import android.os.Handler;
+import android.widget.Toast;
 
 
 public class QuotationActivity extends AppCompatActivity {
@@ -91,6 +97,7 @@ public class QuotationActivity extends AppCompatActivity {
 
 
     // Callback que ejecuta las opciones del toolbar
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
 
@@ -117,11 +124,11 @@ public class QuotationActivity extends AppCompatActivity {
               //refresca la información del view
             case R.id.menu_refresh:
 
-                //acceso al servicio web en segundo plano
-                HTTPAsyncTask httpAsyncTask = new HTTPAsyncTask(this);
-                httpAsyncTask.execute();
-
-                // thread en refreshQuotation()
+                if (isNetworkConnected()){
+                    //acceso al servicio web en segundo plano
+                    HTTPAsyncTask httpAsyncTask = new HTTPAsyncTask(this);
+                    httpAsyncTask.execute(preferences.getString("language", "0"));
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -151,7 +158,6 @@ public class QuotationActivity extends AppCompatActivity {
         //actualizo las etiquetas
         tQuotation.setText(quotation.getQuoteText());
         tAuthor.setText(quotation.getQuoteAuthor());
-
         //hago invisible le progressbar y visible el reresh
         progressBar.setVisibility(View.INVISIBLE);
         menu_refresh.setVisible(true);
@@ -174,5 +180,14 @@ public class QuotationActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public boolean isNetworkConnected(){
+        ConnectivityManager manager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if(networkInfo == null || !networkInfo.isConnected()) return false;// no tenemos acceso a internet.
+    return true;
     }
 }
