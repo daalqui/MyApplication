@@ -56,10 +56,11 @@ public class QuotationActivity extends AppCompatActivity {
         tQuotation = findViewById(R.id.textView4);
         tAuthor = findViewById(R.id.textView3);
 
-        //instancia de objeto SQLite para operaciones a la bd
-        db = MySQLiteOpenHelper.getInstance(this);
         // instancia de objeto room para operaciones a la bd.
         room = MyRoomAbstract.getInstance(this);
+        //instancia de objeto SQLite para operaciones a la bd
+        db = MySQLiteOpenHelper.getInstance(this);
+
 
         if(savedInstanceState != null){
             tQuotation.setText(savedInstanceState.getString("quotation"));
@@ -91,6 +92,7 @@ public class QuotationActivity extends AppCompatActivity {
         inflater.inflate(R.menu.actionbar_quotation_activity,menu);
         this.menu = menu;
         menu_add = menu.findItem(R.id.menu_add);
+        menu_add.setVisible(addVisible);
         menu_refresh = menu.findItem(R.id.menu_refresh);
         return true;
     }

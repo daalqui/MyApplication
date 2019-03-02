@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 public class Quotation {
 
 
-
     @PrimaryKey(autoGenerate = true)
     private int id;
 

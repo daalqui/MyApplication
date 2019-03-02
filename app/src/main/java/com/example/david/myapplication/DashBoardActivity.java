@@ -23,7 +23,7 @@ public class DashBoardActivity extends AppCompatActivity {
             @Override
             public void run() {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(DashBoardActivity.this);
-                if (!preferences.getBoolean("first_run",true)){
+                if (preferences.getBoolean("first_run",true) != true){
                     MyRoomAbstract.getInstance(DashBoardActivity.this).quotationDao().getAllQuotation();
                     preferences.edit().putBoolean("first_run",false).apply();
                 }

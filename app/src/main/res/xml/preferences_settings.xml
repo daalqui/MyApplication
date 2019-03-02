@@ -29,7 +29,7 @@
             android:summary="@string/database_access_resume"
             android:entries="@array/Database_title"
             android:entryValues="@array/Database_value"
-            android:defaultValue="1"
+            android:defaultValue="0"
             android:key="database" />
 
 
