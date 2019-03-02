@@ -46,10 +46,10 @@ public class FavouriteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
 
-
         // instancias de objetos para realizar operaciones a la BD
-        db = MySQLiteOpenHelper.getInstance(this);
         room = MyRoomAbstract.getInstance(this);
+        db = MySQLiteOpenHelper.getInstance(this);
+
 
         // accedo al archivo de configuración
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -63,6 +63,7 @@ public class FavouriteActivity extends AppCompatActivity {
 
         MyAsynTask asynTask = new MyAsynTask(this);
         asynTask.execute(dbOption.matches("0"));
+
 
         vista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -103,6 +104,7 @@ public class FavouriteActivity extends AppCompatActivity {
                         // elimino la quotation de la interfaz
                         lista.remove(position);
                         adapterList.notifyDataSetChanged();
+                        if (adapterList.isEmpty()) menu_delete.setVisible(false);
                     }
                 });
 
@@ -120,6 +122,7 @@ public class FavouriteActivity extends AppCompatActivity {
         inflater.inflate(R.menu.actionbar_favourite_activity,menu);
         this.menu = menu;
         menu_delete = menu.findItem(R.id.menu_delete);
+        if(adapterList.isEmpty()){menu_delete.setVisible(false);}
         return true;
     }
 
@@ -145,9 +148,11 @@ public class FavouriteActivity extends AppCompatActivity {
                        // borro la interfaz
                        lista.clear();
                        adapterList.notifyDataSetChanged();
+
                    }
 
                });
+               menu_delete.setVisible(false);
                alert.setNegativeButton(android.R.string.no,null);
                alert.create().show();
                item.setVisible(false);
@@ -158,11 +163,6 @@ public class FavouriteActivity extends AppCompatActivity {
 
 
     public void listManager(List<Quotation> quotationList){
-      /* no funciona el desaparecer el botón de borrar
-        if(quotationList.size() == 0){
-           menu_delete.setVisible(false);
-        }
-        */
         adapterList.addAll(quotationList);
         vista.setAdapter(adapterList);
 
