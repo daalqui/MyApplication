@@ -19,9 +19,6 @@ public abstract class MyRoomAbstract extends RoomDatabase {
         return myRoomAbstract;
     }
 
-    public boolean quotationExistInBD(Quotation quotation){
-        return quotationDao().getQuotation(quotation.getQuoteText()) != null;
-    }
 
     public abstract QuotationDao quotationDao();
 }
